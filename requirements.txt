@@ -1,0 +1,8 @@
+google-adk
+python-dotenv
+streamlit
+chromadb
+# Pinned so chromadb's telemetry deps don't clash with google-adk:
+opentelemetry-api==1.42.1
+opentelemetry-sdk==1.42.1
+opentelemetry-semantic-conventions==0.63b1

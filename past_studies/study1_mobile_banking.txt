@@ -1,0 +1,8 @@
+STUDY 1 - Mobile banking app usability (8 interviews)
+
+"I tried to pay a friend but the steps weren't in any obvious order, so I gave
+up and used a different app."
+"The instructions for setting up a new payee were buried behind a tiny link."
+"Text on the confirmation screen is too small, I can never tell if it worked."
+"I worry about security but there's no clear sign my money actually moved."
+"Logging in takes too many taps and I do it ten times a day."
