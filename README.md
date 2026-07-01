@@ -112,11 +112,13 @@ adk web
 Then open the local URL it prints, pick `synthesis_agent`, and paste your notes
 into the chat. You'll see each agent run in turn.
 
-**Option C — Streamlit UI (Rich frontend):**
+**Option C — Streamlit UI (Full Research Hub):**
 ```bash
 streamlit run app.py
 ```
-This opens a clean, multi-tab web application where you can paste your notes and view the extracted pain points, themes, and personas in organized sections.
+This opens a robust, multi-tab web application where you can:
+- **Synthesize Notes**: Upload `.txt` files or paste your raw notes to instantly generate pain points, themes, and personas.
+- **Research Memory (RAG)**: Upload past studies into a ChromaDB vector database and ask questions to search across all your historical user research using semantic meaning.
 
 Swap in your own research by replacing `sample_interview_notes.txt` with any
 plain-text notes.
