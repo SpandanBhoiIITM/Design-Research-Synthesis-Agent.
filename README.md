@@ -112,6 +112,12 @@ adk web
 Then open the local URL it prints, pick `synthesis_agent`, and paste your notes
 into the chat. You'll see each agent run in turn.
 
+**Option C — Streamlit UI (Rich frontend):**
+```bash
+streamlit run app.py
+```
+This opens a clean, multi-tab web application where you can paste your notes and view the extracted pain points, themes, and personas in organized sections.
+
 Swap in your own research by replacing `sample_interview_notes.txt` with any
 plain-text notes.
 
@@ -124,6 +130,7 @@ design-research-synthesis-agent/
 │   ├── __init__.py        # lets ADK discover the agent
 │   └── agent.py           # the 3 agents + the SequentialAgent pipeline
 ├── run_synthesis.py       # CLI runner + input security guard
+├── app.py                 # Streamlit frontend app
 ├── sample_interview_notes.txt
 ├── requirements.txt
 ├── .env.example           # template for your API key (copy to .env)
