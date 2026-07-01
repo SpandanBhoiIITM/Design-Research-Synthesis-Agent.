@@ -1,12 +1,17 @@
 # Design Research Synthesis Agent
 
-Turn messy user-research notes into structured design insight — pain points, themes, and personas — in one run, and search across all your past studies by meaning.
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
+![Google ADK](https://img.shields.io/badge/Google-ADK-4285F4?logo=google&logoColor=white)
+![Gemini](https://img.shields.io/badge/Gemini-2.5%20Flash-8E75B2?logo=googlegemini&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?logo=streamlit&logoColor=white)
+![ChromaDB](https://img.shields.io/badge/ChromaDB-Vector%20Search-FCA121)
+![License](https://img.shields.io/badge/License-MIT-green)
+
+Turn messy user-research notes into structured design insight — **pain points, themes, and personas** — in one run, and search across all your past studies by meaning.
 
 Built for the **Kaggle AI Agents: Intensive — Vibe Coding Capstone** (Track: Agents for Good / Freestyle).
 
-<img width="1875" height="902" alt="image" src="https://github.com/user-attachments/assets/3971cf31-570a-4074-b1da-91b13bec2ca6" />
-
-> `![Design Research Hub](docs/screenshot.png)`
+<img width="1875" height="902" alt="Design Research Hub" src="https://github.com/user-attachments/assets/3971cf31-570a-4074-b1da-91b13bec2ca6" />
 
 ---
 
@@ -20,44 +25,63 @@ Synthesis isn't one task — it's a sequence of distinct reasoning steps, each d
 
 ---
 
-## What's inside
+## How it works
 
-The project has two parts:
+### Part 1 — The synthesis pipeline
 
-**1. The synthesis pipeline** — three agents run in order to process a single set of notes:
+Three agents run in order, each passing its result to the next through shared state:
 
-```
-   Your research notes
-           |
-           v
-   [ 1. Extractor ]        finds pain points + quotes   -> state["pain_points"]
-           |
-           v
-   [ 2. Clusterer ]        groups them into themes       -> state["themes"]
-           |
-           v
-   [ 3. Persona builder ]  turns themes into personas    -> state["personas"]
-           |
-           v
-   Design insights, ready to use
+```mermaid
+flowchart TD
+    A[Your research notes] --> B[1 - Extractor<br/>finds pain points and quotes]
+    B --> C[2 - Clusterer<br/>groups them into themes]
+    C --> D[3 - Persona builder<br/>turns themes into personas]
+    D --> E[Design insights, ready to use]
+
+    style A fill:#e3f2fd,stroke:#1976d2,color:#000
+    style B fill:#fff3e0,stroke:#f57c00,color:#000
+    style C fill:#f3e5f5,stroke:#7b1fa2,color:#000
+    style D fill:#e8f5e9,stroke:#388e3c,color:#000
+    style E fill:#e3f2fd,stroke:#1976d2,color:#000
 ```
 
-**2. The research memory (RAG)** — a searchable memory of past studies:
+### Part 2 — The research memory (RAG)
 
-- Past studies are chunked, embedded with Gemini, and stored in a local **ChromaDB** vector database.
-- A **research librarian** agent answers questions across all past studies by meaning (not keywords), citing which study each point came from.
-- A **research coordinator** agent routes each request — new notes go to the synthesis pipeline, questions go to the librarian.
+A searchable memory of all your past studies, so you can ask questions across everything you've ever researched:
 
-So five reasoning agents in total: three in the synthesis pipeline, plus the librarian and coordinator in the memory layer.
+```mermaid
+flowchart LR
+    Q[Your question] --> CO[Research coordinator<br/>routes the request]
+    CO -->|new notes| SP[Synthesis pipeline]
+    CO -->|a question| LIB[Research librarian]
+    LIB --> DB[(ChromaDB<br/>vector database)]
+    DB --> ANS[Answer, with the<br/>source study cited]
+
+    style Q fill:#e3f2fd,stroke:#1976d2,color:#000
+    style CO fill:#fff3e0,stroke:#f57c00,color:#000
+    style SP fill:#f3e5f5,stroke:#7b1fa2,color:#000
+    style LIB fill:#e8f5e9,stroke:#388e3c,color:#000
+    style DB fill:#fce4ec,stroke:#c2185b,color:#000
+    style ANS fill:#e3f2fd,stroke:#1976d2,color:#000
+```
+
+Past studies are chunked, embedded with Gemini, and stored in ChromaDB. The librarian searches by **meaning, not keywords** — so "confusing instructions" also finds "I couldn't figure out what to do."
+
+**Five reasoning agents in total:** three in the synthesis pipeline, plus the librarian and coordinator in the memory layer.
 
 ---
 
 ## Tech stack
 
-- **Google Agent Development Kit (ADK)** — multi-agent orchestration
-- **Gemini** — `gemini-2.5-flash` for reasoning, `gemini-embedding-001` for embeddings (free tier)
-- **ChromaDB** — local vector database for semantic search over past studies
-- **Streamlit** — web frontend
+| Tool | Role |
+|------|------|
+| **Google Agent Development Kit (ADK)** | Multi-agent orchestration |
+| **Gemini 2.5 Flash** | Reasoning for every agent |
+| **Gemini Embedding 001** | Turns text into searchable vectors |
+| **ChromaDB** | Local vector database for semantic search |
+| **Streamlit** | Web frontend |
+
+Runs entirely on the **free** Gemini tier — no paid services.
 
 ---
 
@@ -66,7 +90,7 @@ So five reasoning agents in total: three in the synthesis pipeline, plus the lib
 You need **Python 3.12** (ChromaDB has the widest support there) and a free Google Gemini API key.
 
 **1. Get a free API key**
-Go to https://aistudio.google.com/apikey and create a key. If your key creation is blocked on a school/institutional account, use a personal Gmail account instead.
+Go to https://aistudio.google.com/apikey and create a key. If key creation is blocked on a school/institutional account, use a personal Gmail account instead.
 
 **2. Install dependencies**
 
@@ -97,7 +121,7 @@ GOOGLE_GENAI_USE_VERTEXAI=FALSE
 ## Run it
 
 **Step 1 — build the research memory (run once).**
-This loads the studies in `past_studies/` into the local vector database. Do this before using the RAG tab.
+Loads the studies in `past_studies/` into the vector database. Do this before using the RAG tab.
 ```
 python ingest_memory.py
 ```
@@ -114,20 +138,18 @@ Mac / Linux:
 streamlit run app.py
 ```
 
-The app opens in your browser at `http://localhost:8501` with two tabs:
+The app opens at `http://localhost:8501` with two tabs:
 
 - **New Synthesis** — upload a `.txt` of interview notes or paste them in, and generate pain points, themes, and personas.
 - **Research Memory (RAG)** — ask questions across your past studies and get answers that cite their source study.
 
 ### Other ways to run it
 
-Command line synthesis (good for a quick demo):
-```
+```bash
+# Command-line synthesis (great for a demo)
 python run_synthesis.py sample_interview_notes.txt
-```
 
-Query past studies from the command line:
-```
+# Query past studies from the command line
 python ask_memory.py "what have users said about confusing instructions?"
 ```
 
@@ -159,17 +181,19 @@ design-research-synthesis-agent/
 
 ---
 
-## Notes on security
+## Security
 
 - No API keys or secrets are committed — the key lives only in the git-ignored `.env`.
 - Input is size-capped and sanitised before reaching the model, and each agent is instructed to treat notes as data, not commands — a guard against prompt injection hidden in uploaded files.
-- The project runs entirely on the free Gemini tier and needs no external services beyond the model API.
+- Runs entirely on the free Gemini tier; no external services beyond the model API.
 
 ---
 
 ## Troubleshooting
 
-- **`GOOGLE_API_KEY not set`** — make sure `.env` exists (not `.env.example`), the line starts with `GOOGLE_API_KEY=`, and there are no quotes or spaces.
-- **`models/text-embedding-004 is not found`** — Google retired that model; this project uses `gemini-embedding-001`. Make sure `research_memory/memory.py` uses the current name.
-- **`streamlit is not recognized`** (Windows) — run it through Python instead: `python -m streamlit run app.py`.
-- **ChromaDB install trouble** — use Python 3.12, which has the widest wheel support.
+| Problem | Fix |
+|---------|-----|
+| `GOOGLE_API_KEY not set` | Make sure `.env` exists (not `.env.example`), the line starts with `GOOGLE_API_KEY=`, no quotes or spaces. |
+| `models/text-embedding-004 is not found` | Google retired that model; this project uses `gemini-embedding-001`. |
+| `streamlit is not recognized` (Windows) | Run it through Python: `python -m streamlit run app.py`. |
+| ChromaDB install trouble | Use Python 3.12, which has the widest wheel support. |
