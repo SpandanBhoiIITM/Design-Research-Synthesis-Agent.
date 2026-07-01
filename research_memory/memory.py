@@ -13,7 +13,7 @@ from chromadb.api.types import EmbeddingFunction, Documents, Embeddings
 from google import genai
 
 # Gemini's embedding model. If this name ever errors, try "gemini-embedding-001".
-EMBED_MODEL = "text-embedding-004"
+EMBED_MODEL = ""gemini-embedding-001"
 
 # Where the vector DB lives on disk (created automatically, git-ignored).
 DB_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "research_memory_db")
