@@ -6,10 +6,10 @@ Run this ONCE (or whenever you add new studies):
 """
 
 import os
-   from dotenv import load_dotenv
-   from research_memory.memory import add_study, get_collection
+from dotenv import load_dotenv
+from research_memory.memory import add_study, get_collection
 
-   load_dotenv()
+load_dotenv()
 
 STUDIES_DIR = os.path.join(os.path.dirname(__file__), "past_studies")
 
